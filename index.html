@@ -1,174 +1,536 @@
-<!DOCTYPE html><html lang="ko">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>하사의 장례식</title>
+  <title>:::ENCRYPTED CONNECTION:::</title>
   <style>
+    * {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      background-color: #0a0a0a;
-      color: #ccc;
+      background-color: #000000;
+      color: #0f6b0f;
       font-family: 'Courier New', Courier, monospace;
-      background-image: radial-gradient(circle at top center, #1a1a1a 0%, #000000 80%);
+      background-image: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 0, 0.03) 2px,
+          rgba(0, 255, 0, 0.03) 4px
+        );
       height: 100vh;
       overflow: hidden;
-    }.static-effect, .static-effect-extra {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center center / cover no-repeat;
-  opacity: 0.06;
-  pointer-events: none;
-  z-index: 1;
-  mix-blend-mode: screen;
-}
+      cursor: crosshair;
+    }
 
-.static-effect-extra {
-  opacity: 0.04;
-  animation: flicker 0.3s infinite;
-}
+    .terminal-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      border-bottom: 1px solid #0f6b0f;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      z-index: 10;
+      animation: glitch 0.5s infinite;
+    }
 
-@keyframes flicker {
-  0%, 100% { opacity: 0.04; }
-  50% { opacity: 0.06; }
-}
+    @keyframes glitch {
+      0%, 98% { transform: translateX(0); }
+      99% { transform: translateX(-2px); }
+      100% { transform: translateX(2px); }
+    }
 
-.container {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 50px;
-}
+    .static-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          rgba(0, 255, 0, 0.1) 1px,
+          transparent 2px
+        ),
+        radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 1;
+      animation: staticNoise 0.1s infinite;
+    }
 
-.portrait {
-  border: 8px solid #444;
-  padding: 8px;
-  background-color: #222;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-  width: 250px;
-  height: 320px;
-  margin-bottom: 20px;
-}
+    @keyframes staticNoise {
+      0% { opacity: 0.8; transform: translateY(0px); }
+      25% { opacity: 0.6; transform: translateY(-1px); }
+      50% { opacity: 1; transform: translateY(1px); }
+      75% { opacity: 0.7; transform: translateY(-1px); }
+      100% { opacity: 0.9; transform: translateY(0px); }
+    }
 
-.portrait img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(100%) contrast(130%);
-  transition: filter 0.5s ease, transform 0.3s ease;
-}
+    .container {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 80px;
+      animation: subtleShake 2s infinite;
+    }
 
-.caption {
-  font-size: 1.4rem;
-  color: #a00;
-  margin-top: 10px;
-  text-shadow: 0 0 5px #400, 0 0 10px #a00;
-  animation: flickerText 0.1s infinite;
-}
+    @keyframes subtleShake {
+      0%, 100% { transform: translateX(0px) translateY(0px); }
+      25% { transform: translateX(0.5px) translateY(-0.5px); }
+      50% { transform: translateX(-0.5px) translateY(0.5px); }
+      75% { transform: translateX(0.5px) translateY(0.5px); }
+    }
 
-@keyframes flickerText {
-  0%, 100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  10% {
-    opacity: 0.8;
-    transform: translateX(-1px);
-  }
-  20% {
-    opacity: 0.6;
-    transform: translateX(1px);
-  }
-  30% {
-    opacity: 0.9;
-    transform: translateX(0);
-  }
-  40% {
-    opacity: 0.5;
-    transform: translateX(-1px);
-  }
-}
+    .access-warning {
+      color: #ff0000;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      text-align: center;
+      animation: redFlicker 1s infinite;
+      text-shadow: 0 0 10px #ff0000;
+    }
 
-#flowerBtn, #msgBtn {
-  background: #111;
-  color: #ddd;
-  border: 1px solid #333;
-  padding: 8px 12px;
-  margin: 10px 5px;
-  cursor: pointer;
-}
+    @keyframes redFlicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
 
-#flowerArea {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 100px;
-  z-index: 2;
-}
+    .photo-warning {
+      color: #ff0000;
+      font-size: 0.7rem;
+      margin-bottom: 10px;
+      text-align: center;
+      animation: urgentBlink 0.5s infinite;
+      text-shadow: 0 0 8px #ff0000;
+      border: 1px solid #ff0000;
+      padding: 8px;
+      background: rgba(255, 0, 0, 0.1);
+    }
 
-#msgInput {
-  background: #000;
-  color: #aaa;
-  border: 1px solid #333;
-  padding: 5px;
-  margin: 10px;
-  width: 250px;
-}
+    @keyframes urgentBlink {
+      0%, 100% { opacity: 1; background: rgba(255, 0, 0, 0.1); }
+      50% { opacity: 0.5; background: rgba(255, 0, 0, 0.3); }
+    }
 
-#msgContainer div {
-  position: absolute;
-  color: #666;
-  opacity: 0.5;
-  font-size: 0.9rem;
-  max-width: 200px;
-}
+    .portrait {
+      border: 3px solid #0f6b0f;
+      padding: 0;
+      background-color: #001100;
+      box-shadow: 
+        0 0 20px rgba(15, 107, 15, 0.5),
+        inset 0 0 20px rgba(255, 0, 0, 0.1);
+      width: 280px;
+      height: 350px;
+      margin-bottom: 30px;
+      position: relative;
+      animation: borderPulse 3s infinite;
+      cursor: not-allowed;
+    }
 
+    @keyframes borderPulse {
+      0%, 100% { border-color: #0f6b0f; box-shadow: 0 0 20px rgba(15, 107, 15, 0.5); }
+      50% { border-color: #ff0000; box-shadow: 0 0 30px rgba(255, 0, 0, 0.7); }
+    }
+
+    .portrait::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 1px,
+        rgba(255, 0, 0, 0.1) 1px,
+        rgba(255, 0, 0, 0.1) 2px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .portrait::after {
+      content: '⚠️ DO NOT CLICK ⚠️';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ff0000;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-shadow: 0 0 10px #ff0000;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 10px;
+      border: 2px solid #ff0000;
+      z-index: 3;
+      animation: warningPulse 1s infinite;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .portrait:hover::after {
+      opacity: 1;
+    }
+
+    @keyframes warningPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%) contrast(150%) brightness(0.7) hue-rotate(90deg);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 0;
+    }
+
+    .portrait:hover img {
+      filter: grayscale(100%) contrast(200%) brightness(0.9) hue-rotate(180deg) saturate(2);
+      transform: scale(1.02);
+    }
+
+    .caption {
+      font-size: 1.2rem;
+      color: #0f6b0f;
+      margin-top: 15px;
+      text-shadow: 0 0 10px #0f6b0f;
+      animation: textGlitch 2s infinite;
+      letter-spacing: 2px;
+    }
+
+    @keyframes textGlitch {
+      0%, 90%, 100% {
+        transform: translateX(0);
+        color: #0f6b0f;
+      }
+      5% {
+        transform: translateX(-2px);
+        color: #ff0000;
+        text-shadow: 0 0 10px #ff0000;
+      }
+      10% {
+        transform: translateX(2px);
+        color: #0000ff;
+        text-shadow: 0 0 10px #0000ff;
+      }
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    #flowerBtn, #msgBtn {
+      background: #000000;
+      color: #0f6b0f;
+      border: 2px solid #0f6b0f;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #flowerBtn:hover, #msgBtn:hover {
+      background: #0f6b0f;
+      color: #000000;
+      box-shadow: 0 0 15px #0f6b0f;
+      transform: scale(1.05);
+    }
+
+    #msgInput {
+      background: #000000;
+      color: #0f6b0f;
+      border: 2px solid #0f6b0f;
+      padding: 10px;
+      width: 250px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    #msgInput::placeholder {
+      color: #0a5a0a;
+    }
+
+    #msgInput:focus {
+      box-shadow: 0 0 15px #0f6b0f;
+      background: #001100;
+    }
+
+    #flowerArea {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 120px;
+      z-index: 2;
+    }
+
+    .flower {
+      color: #ff0000;
+      font-size: 1.5rem;
+      text-shadow: 0 0 10px #ff0000;
+      animation: flowerGlow 2s infinite;
+    }
+
+    @keyframes flowerGlow {
+      0%, 100% { 
+        color: #ff0000; 
+        text-shadow: 0 0 10px #ff0000; 
+        transform: scale(1);
+      }
+      50% { 
+        color: #ffff00; 
+        text-shadow: 0 0 15px #ffff00; 
+        transform: scale(1.2);
+      }
+    }
+
+    #msgContainer div {
+      position: absolute;
+      color: #0f6b0f;
+      opacity: 0.8;
+      font-size: 0.8rem;
+      max-width: 200px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 5px 10px;
+      border: 1px solid #0f6b0f;
+      border-radius: 0;
+      animation: messageFloat 10s linear infinite;
+      text-shadow: 0 0 5px #0f6b0f;
+    }
+
+    @keyframes messageFloat {
+      0% { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
+      50% { transform: translateY(-10px) rotate(1deg); opacity: 1; }
+      100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+    }
+
+    .warning-text {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ff0000;
+      font-size: 0.7rem;
+      animation: warningBlink 1.5s infinite;
+      z-index: 5;
+    }
+
+    @keyframes warningBlink {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .hidden-text {
+      position: absolute;
+      color: rgba(15, 107, 15, 0.1);
+      font-size: 0.6rem;
+      animation: hiddenReveal 5s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes hiddenReveal {
+      0%, 90%, 100% { opacity: 0.1; }
+      5%, 10% { opacity: 0.8; }
+    }
+
+    .danger-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 0, 0, 0.3);
+      z-index: 100;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      animation: dangerFlash 0.5s infinite;
+    }
+
+    @keyframes dangerFlash {
+      0%, 100% { background: rgba(255, 0, 0, 0.1); }
+      50% { background: rgba(255, 0, 0, 0.5); }
+    }
+
+    .danger-message {
+      background: #000;
+      color: #ff0000;
+      padding: 20px;
+      border: 3px solid #ff0000;
+      text-align: center;
+      font-size: 1.2rem;
+      animation: shake 0.5s infinite;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
   </style>
 </head>
 <body>
-  <div class="static-effect"></div>
-  <div class="static-effect-extra"></div>
+  <div class="terminal-header">
+    [ENCRYPTED] TOR://██████████.onion/memorial ● CONNECTION ESTABLISHED ● IP: █████████
+  </div>
+  
+  <div class="static-overlay"></div>
+  
+  <div class="danger-overlay" id="dangerOverlay">
+    <div class="danger-message">
+      ⚠️ WARNING: UNAUTHORIZED ACCESS ATTEMPT ⚠️<br>
+      SYSTEM BREACH DETECTED<br>
+      DO NOT PROCEED<br><br>
+      <span style="font-size: 0.8rem;">Press ESC to continue at your own risk</span>
+    </div>
+  </div>
+  
   <div class="container">
+    <div class="access-warning">
+      ⚠️ UNAUTHORIZED ACCESS DETECTED ⚠️<br>
+      PROCEED WITH CAUTION
+    </div>
+    
+    <div class="photo-warning">
+      🚫 CRITICAL WARNING: DO NOT INTERACT WITH IMAGE 🚫<br>
+      CLICKING MAY TRIGGER SECURITY PROTOCOLS<br>
+      ████████ MONITORING ACTIVE ████████
+    </div>
+    
     <div class="portrait" id="portrait">
-      <a href="https://twitter.com/gu9chae" target="_blank">
+      <a href="https://twitter.com/gu9chae" target="_blank" id="photoLink">
         <img id="hasaImg" src="무제75_20250616191742.png" alt="">
       </a>
     </div>
-    <div class="caption">HASA님께선 늘 우리 곁에 계십니다</div><div>
-  <button id="flowerBtn">헌화</button>
-  <input type="text" id="msgInput" placeholder="하사에게 남길 말...">
-  <button id="msgBtn">조문</button>
-</div>
-
+    
+    <div class="caption">SUBJECT: HASA // STATUS: [REDACTED]</div>
+    
+    <div class="controls">
+      <button id="flowerBtn">TRIBUTE</button>
+      <input type="text" id="msgInput" placeholder="Leave encrypted message...">
+      <button id="msgBtn">TRANSMIT</button>
+    </div>
   </div>
+  
   <div id="flowerArea"></div>
-  <div id="msgContainer"></div>  <script>
+  <div id="msgContainer"></div>
+  
+  <div class="warning-text">
+    CONNECTION MAY BE MONITORED ● DO NOT REVEAL IDENTITY
+  </div>
+  
+  <!-- Hidden messages that occasionally appear -->
+  <div class="hidden-text" style="top: 20%; left: 10%;">he sees everything</div>
+  <div class="hidden-text" style="top: 70%; right: 15%;">they know you're here</div>
+  <div class="hidden-text" style="top: 40%; left: 80%;">███████████</div>
+  <div class="hidden-text" style="top: 60%; left: 5%;">don't click the photo</div>
+  <div class="hidden-text" style="top: 30%; right: 5%;">you've been warned</div>
+
+  <script>
     let flowerCount = 0;
+    let messageCount = 0;
+    let clickAttempts = 0;
     const flowerArea = document.getElementById('flowerArea');
     const hasaImg = document.getElementById('hasaImg');
+    const msgContainer = document.getElementById('msgContainer');
+    const dangerOverlay = document.getElementById('dangerOverlay');
+    const photoLink = document.getElementById('photoLink');
+
+    // 깜빡이는 효과
+    setInterval(() => {
+      document.body.style.filter = Math.random() > 0.95 ? 'brightness(1.2) contrast(1.5)' : 'brightness(1)';
+      setTimeout(() => {
+        document.body.style.filter = 'brightness(1)';
+      }, 50);
+    }, 100);
+
+    // 랜덤 글리치 효과
+    setInterval(() => {
+      if (Math.random() > 0.98) {
+        hasaImg.style.filter = 'grayscale(100%) contrast(300%) brightness(2) hue-rotate(270deg) invert(1)';
+        setTimeout(() => {
+          hasaImg.style.filter = 'grayscale(100%) contrast(150%) brightness(0.7) hue-rotate(90deg)';
+        }, 100);
+      }
+    }, 500);
+
+    // 사진 클릭 시 경고
+    photoLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      clickAttempts++;
+      
+      dangerOverlay.style.display = 'flex';
+      document.body.style.background = '#330000';
+      
+      // 더 강한 글리치 효과
+      hasaImg.style.filter = 'grayscale(0%) contrast(500%) brightness(3) hue-rotate(0deg) invert(1) saturate(10)';
+      hasaImg.style.animation = 'shake 0.1s infinite';
+      
+      if (clickAttempts >= 3) {
+        document.body.innerHTML = `
+          <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: #000; color: #ff0000; font-family: 'Courier New', monospace; font-size: 2rem; animation: shake 0.5s infinite;">
+            SYSTEM COMPROMISED<br>
+            CONNECTION TERMINATED<br>
+            ERROR 666
+          </div>
+        `;
+      }
+    });
+
+    // ESC 키로 경고창 닫기
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        dangerOverlay.style.display = 'none';
+        document.body.style.background = '#000000';
+        hasaImg.style.filter = 'grayscale(100%) contrast(150%) brightness(0.7) hue-rotate(90deg)';
+        hasaImg.style.animation = '';
+      }
+    });
 
     document.getElementById('flowerBtn').addEventListener('click', () => {
       flowerCount++;
       const flower = document.createElement('div');
-      flower.textContent = '𝄞';
+      flower.className = 'flower';
+      flower.textContent = ['⚰️', '🕯️', '💀', '🌹', '⚱️'][Math.floor(Math.random() * 5)];
       flower.style.position = 'absolute';
       flower.style.left = `${Math.random() * 90 + 5}%`;
-      flower.style.bottom = `${Math.random() * 30 + 10}px`;
-      flower.style.opacity = 0.7;
+      flower.style.bottom = `${Math.random() * 80 + 10}px`;
       flower.style.zIndex = 3;
       flowerArea.appendChild(flower);
 
       if (flowerCount === 1) {
-        hasaImg.style.filter = 'contrast(130%)';
-        hasaImg.style.transform = 'scale(1.05)';
+        document.body.style.backgroundColor = '#001100';
         setTimeout(() => {
-          hasaImg.style.transform = 'scale(1)';
-        }, 800);
+          document.body.style.backgroundColor = '#000000';
+        }, 1000);
+      }
+
+      if (flowerCount === 13) {
+        hasaImg.style.filter = 'grayscale(0%) contrast(200%) brightness(1.5) saturate(5) hue-rotate(0deg)';
+        setTimeout(() => {
+          hasaImg.style.filter = 'grayscale(100%) contrast(150%) brightness(0.7) hue-rotate(90deg)';
+        }, 2000);
       }
     });
 
@@ -176,12 +538,64 @@
       const txt = document.getElementById('msgInput').value;
       if (!txt) return;
 
+      messageCount++;
       const msg = document.createElement('div');
-      msg.textContent = txt;
-      msg.style.left = `${Math.random() * 80 + 10}%`;
-      msg.style.top = `${Math.random() * 70 + 10}%`;
-      document.getElementById('msgContainer').appendChild(msg);
+      
+      const encrypted = Math.random() > 0.7 ? 
+        txt.split('').map(c => Math.random() > 0.5 ? c : '█').join('') : 
+        txt;
+      
+      msg.innerHTML = `<span style="color: #666;">[${Date.now().toString(36)}]</span> ${encrypted}`;
+      msg.style.left = `${Math.random() * 70 + 15}%`;
+      msg.style.top = `${Math.random() * 60 + 20}%`;
+      msgContainer.appendChild(msg);
+      
       document.getElementById('msgInput').value = '';
+
+      if (messageCount > 5) {
+        document.body.style.animation = 'glitch 0.1s infinite';
+        setTimeout(() => {
+          document.body.style.animation = '';
+        }, 2000);
+      }
     });
-  </script></body>
+
+    document.getElementById('msgInput').addEventListener('keydown', (e) => {
+      if (Math.random() > 0.9) {
+        e.target.style.background = '#ff0000';
+        setTimeout(() => {
+          e.target.style.background = '#000000';
+        }, 100);
+      }
+    });
+
+    let mouseTrail = [];
+    document.addEventListener('mousemove', (e) => {
+      if (Math.random() > 0.95) {
+        const dot = document.createElement('div');
+        dot.style.position = 'fixed';
+        dot.style.left = e.clientX + 'px';
+        dot.style.top = e.clientY + 'px';
+        dot.style.width = '2px';
+        dot.style.height = '2px';
+        dot.style.background = '#ff0000';
+        dot.style.zIndex = '100';
+        dot.style.pointerEvents = 'none';
+        document.body.appendChild(dot);
+        
+        setTimeout(() => {
+          if (dot.parentNode) {
+            dot.parentNode.removeChild(dot);
+          }
+        }, 500);
+      }
+    });
+
+    window.addEventListener('beforeunload', (e) => {
+      e.preventDefault();
+      e.returnValue = 'WARNING: Disconnecting may alert monitoring systems.';
+      return e.returnValue;
+    });
+  </script>
+</body>
 </html>
