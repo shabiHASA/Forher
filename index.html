@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HASA님께선 아직 곁에 계십니다</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0a0a0a;
+      color: #ccc;
+      font-family: 'Courier New', Courier, monospace;
+      background-image: radial-gradient(circle at top center, #1a1a1a 0%, #000000 80%);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .static-effect, .static-effect-extra {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center center / cover no-repeat;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 1;
+      mix-blend-mode: screen;
+    }
+
+    .static-effect-extra {
+      opacity: 0.04;
+      animation: flicker 0.3s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 0.04; }
+      50% { opacity: 0.06; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 50px;
+    }
+
+    .portrait {
+      border: 8px solid #444;
+      padding: 8px;
+      background-color: #222;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      width: 250px;
+      height: 320px;
+      margin-bottom: 20px;
+    }
+
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%) contrast(130%);
+      transition: filter 0.5s ease, transform 0.3s ease;
+    }
+
+    .caption {
+      font-size: 1.4rem;
+      color: #aaa;
+      margin-top: 10px;
+      text-shadow: 0 0 10px #000;
+    }
+
+    .glitch {
+      color: #f00;
+      animation: glitch 1s infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 cyan; }
+      20% { text-shadow: -2px 0 red, 2px 0 cyan; }
+      40% { text-shadow: 2px 2px red, -2px -2px cyan; }
+      60% { text-shadow: -2px 2px red, 2px -2px cyan; }
+      80% { text-shadow: 0px 0px red, 0px 0px cyan; }
+      100% { text-shadow: 2px 0 red, -2px 0 cyan; }
+    }
+
+    #flowerBtn, #msgBtn {
+      background: #111;
+      color: #ddd;
+      border: 1px solid #333;
+      padding: 8px 12px;
+      margin: 10px 5px;
+      cursor: pointer;
+    }
+
+    #flowerArea {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      z-index: 2;
+    }
+
+    #msgInput {
+      background: #000;
+      color: #aaa;
+      border: 1px solid #333;
+      padding: 5px;
+      margin: 10px;
+      width: 250px;
+    }
+
+    #msgContainer div {
+      position: absolute;
+      color: #666;
+      opacity: 0.5;
+      font-size: 0.9rem;
+      max-width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="static-effect"></div>
+  <div class="static-effect-extra"></div>
+  <div class="container">
+    <div class="portrait" id="portrait">
+      <img id="hasaImg" src="무제75_20250614130309.png" alt="">
+    </div>
+    <div class="caption glitch">하사의 장례식</div>
+
+    <div>
+      <button id="flowerBtn">헌화하기</button>
+      <input type="text" id="msgInput" placeholder="하사에게 남길 말...">
+      <button id="msgBtn">조문</button>
+    </div>
+  </div>
+  <div id="flowerArea"></div>
+  <div id="msgContainer"></div>
+
+  <script>
+    let flowerCount = 0;
+    const flowerArea = document.getElementById('flowerArea');
+    const hasaImg = document.getElementById('hasaImg');
+
+    document.getElementById('flowerBtn').addEventListener('click', () => {
+      flowerCount++;
+      const flower = document.createElement('div');
+      flower.textContent = '?';
+      flower.style.position = 'absolute';
+      flower.style.left = `${Math.random() * 90 + 5}%`;
+      flower.style.bottom = `${Math.random() * 30 + 10}px`;
+      flower.style.opacity = 0.7;
+      flower.style.zIndex = 3;
+      flowerArea.appendChild(flower);
+
+      if (flowerCount === 1) {
+        hasaImg.style.filter = 'contrast(130%)';
+        hasaImg.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+          hasaImg.style.transform = 'scale(1)';
+        }, 800);
+      }
+    });
+
+    document.getElementById('msgBtn').addEventListener('click', () => {
+      const txt = document.getElementById('msgInput').value;
+      if (!txt) return;
+
+      const msg = document.createElement('div');
+      msg.textContent = txt;
+      msg.style.left = `${Math.random() * 80 + 10}%`;
+      msg.style.top = `${Math.random() * 70 + 10}%`;
+      document.getElementById('msgContainer').appendChild(msg);
+      document.getElementById('msgInput').value = '';
+    });
+  </script>
+</body>
+</html>
