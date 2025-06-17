@@ -630,44 +630,49 @@
         }
     }
 
-    // 페이지 로드 시 오디오 준비
-    window.addEventListener('load', () => {
-        // 여러 이벤트에 오디오 시작 연결
-        const events = ['click', 'touchstart', 'keydown', 'mousemove'];
-        
-        function handleFirstInteraction() {
-            initAudio();
-            // 한 번 실행되면 모든 이벤트 리스너 제거
-            events.forEach(event => {
-                document.removeEventListener(event, handleFirstInteraction);
-            });
-        }
-        
-        events.forEach(event => {
-            document.addEventListener(event, handleFirstInteraction, { once: true });
+    // === 배경음악 자동 재생 ===
+    let bgAudio = null;
+let hasStarted = false;
+
+function playBackgroundMusic() {
+    if (hasStarted) return;
+    
+    try {
+        // 기존 오디오들 모두 중단
+        document.querySelectorAll('audio, video').forEach(media => {
+            media.pause();
+            media.currentTime = 0;
         });
         
-        // 오디오 상태 확인용 버튼 (디버깅용)
-        const audioBtn = document.createElement('button');
-        audioBtn.textContent = '🔊 AUDIO TEST';
-        audioBtn.style.position = 'fixed';
-        audioBtn.style.top = '10px';
-        audioBtn.style.right = '10px';
-        audioBtn.style.background = '#000';
-        audioBtn.style.color = '#0f6b0f';
-        audioBtn.style.border = '1px solid #0f6b0f';
-        audioBtn.style.padding = '5px 10px';
-        audioBtn.style.fontSize = '0.7rem';
-        audioBtn.style.cursor = 'pointer';
-        audioBtn.style.zIndex = '1000';
+        // 배경음악 생성
+        bgAudio = new Audio('하사.mp3');
+        bgAudio.loop = true;
+        bgAudio.volume = 0.5;
         
-        audioBtn.addEventListener('click', () => {
-            initAudio();
-            audioBtn.textContent = isPlaying ? '🔊 PLAYING' : '🔇 FAILED';
+        // 재생 시작
+        bgAudio.play().then(() => {
+            console.log('배경음악 재생 시작');
+            hasStarted = true;
+        }).catch(err => {
+            console.log('자동재생 차단됨, 클릭 대기중');
         });
         
-        document.body.appendChild(audioBtn);
-    });
+    } catch (error) {
+        console.error('오디오 로드 실패:', error);
+    }
+}
+
+// 첫 클릭에 음악 시작
+document.addEventListener('click', function startMusic() {
+    playBackgroundMusic();
+    document.removeEventListener('click', startMusic);
+}, { once: true });
+
+// 터치도 지원 (모바일)
+document.addEventListener('touchstart', function startMusicTouch() {
+    playBackgroundMusic();
+    document.removeEventListener('touchstart', startMusicTouch);
+}, { once: true });
 
     // 여러 이벤트에 리스너 추가
     document.addEventListener('click', initAudio);
