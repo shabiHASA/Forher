@@ -500,125 +500,111 @@
   <div class="hidden-text" style="top: 30%; right: 5%;">you've been warned</div>
 
   <script>
-    // === 배경음악 생성 ===
-    let audioContext;
-    let gainNode;
-    let noiseBuffer;
-    let noiseSource;
-    let isPlaying = false;
+      // === 섬뜩한 배경음 생성 ===
+    let audioCtx;
+    let isAudioStarted = false;
 
-    // 오싹한 노이즈 사운드를 생성하는 함수
-    function createCreepyNoise() {
-        if (!audioContext) {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-
-        // 게인 노드 생성 (볼륨 조절용)
-        gainNode = audioContext.createGain();
-        gainNode.gain.value = 0.1; // 낮은 볼륨으로 시작
-
-        // 노이즈 버퍼 생성
-        const bufferSize = audioContext.sampleRate * 2; // 2초 길이
-        noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-        const output = noiseBuffer.getChannelData(0);
-
-        // 복합적인 섬뜩한 사운드 생성
-        for (let i = 0; i < bufferSize; i++) {
-            // 화이트 노이즈
-            let whiteNoise = Math.random() * 2 - 1;
-            
-            // 저주파 럼블링
-            let lowFreq = Math.sin(2 * Math.PI * 20 * i / audioContext.sampleRate) * 0.3;
-            
-            // 불규칙한 글리치 사운드
-            let glitch = Math.random() > 0.999 ? (Math.random() * 2 - 1) * 0.8 : 0;
-            
-            // 섬뜩한 고주파 웨일링
-            let highPitch = Math.sin(2 * Math.PI * (800 + Math.random() * 400) * i / audioContext.sampleRate) * 0.1;
-            
-            // 모든 사운드 합성
-            output[i] = (whiteNoise * 0.3 + lowFreq + glitch + highPitch) * 0.4;
-        }
-
-        // 노이즈 소스 생성 및 연결
-        noiseSource = audioContext.createBufferSource();
-        noiseSource.buffer = noiseBuffer;
-        noiseSource.loop = true;
-
-        // 저역 통과 필터 (더 으스스하게)
-        const filter = audioContext.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 800;
-        filter.Q.value = 1;
-
-        // 컨볼버 (잔향 효과)
-        const convolver = audioContext.createConvolver();
-        const impulseSize = audioContext.sampleRate * 3;
-        const impulse = audioContext.createBuffer(2, impulseSize, audioContext.sampleRate);
-        for (let channel = 0; channel < 2; channel++) {
-            const channelData = impulse.getChannelData(channel);
-            for (let i = 0; i < impulseSize; i++) {
-                channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / impulseSize, 2);
-            }
-        }
-        convolver.buffer = impulse;
-
-        // 오디오 노드들 연결
-        noiseSource.connect(filter);
-        filter.connect(convolver);
-        convolver.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-
-        return noiseSource;
-    }
-
-    // 배경음 시작 함수
     function startCreepyAudio() {
-        if (!isPlaying && audioContext) {
-            noiseSource = createCreepyNoise();
-            noiseSource.start();
-            isPlaying = true;
-
-            // 볼륨을 서서히 올림
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + 3);
-
-            // 랜덤한 볼륨 변화로 더 섬뜩하게
-            setInterval(() => {
-                if (gainNode && isPlaying) {
-                    const randomVolume = 0.1 + Math.random() * 0.1;
-                    gainNode.gain.setTargetAtTime(randomVolume, audioContext.currentTime, 0.5);
+        if (isAudioStarted) return;
+        
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // 노이즈 생성기
+            function createNoise() {
+                const bufferSize = audioCtx.sampleRate * 0.5; // 0.5초
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                
+                for (let i = 0; i < bufferSize; i++) {
+                    // 복잡한 노이즈 믹스
+                    const white = (Math.random() - 0.5) * 0.3;
+                    const low = Math.sin(i * 0.01) * 0.2;
+                    const crackle = Math.random() > 0.98 ? (Math.random() - 0.5) * 0.5 : 0;
+                    data[i] = white + low + crackle;
                 }
-            }, 2000);
+                return buffer;
+            }
+
+            // 지속적인 노이즈 플레이
+            function playNoise() {
+                const source = audioCtx.createBufferSource();
+                const gainNode = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+                
+                source.buffer = createNoise();
+                source.loop = false;
+                
+                // 필터 설정 (더 섬뜩하게)
+                filter.type = 'lowpass';
+                filter.frequency.value = 600 + Math.random() * 400;
+                filter.Q.value = 1;
+                
+                // 볼륨 설정
+                gainNode.gain.value = 0.1 + Math.random() * 0.05;
+                
+                // 연결
+                source.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                source.start(0);
+                
+                // 다음 노이즈 예약
+                setTimeout(playNoise, 400 + Math.random() * 200);
+            }
+
+            // 저주파 드론 사운드
+            function createDrone() {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.value = 40 + Math.random() * 20;
+                gainNode.gain.value = 0.05;
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                
+                // 주파수를 랜덤하게 변화
+                setInterval(() => {
+                    if (oscillator.frequency) {
+                        oscillator.frequency.setTargetAtTime(
+                            40 + Math.random() * 30, 
+                            audioCtx.currentTime, 
+                            2
+                        );
+                    }
+                }, 3000);
+            }
+
+            // 오디오 시작
+            playNoise();
+            createDrone();
+            isAudioStarted = true;
+            
+            console.log('섬뜩한 배경음 시작됨!');
+            
+        } catch (error) {
+            console.error('오디오 시작 실패:', error);
         }
     }
 
-    // 페이지 로드 시 오디오 시작
-    window.addEventListener('load', () => {
-        // 사용자 상호작용 후 오디오 시작 (브라우저 정책)
-        document.addEventListener('click', () => {
-            if (!isPlaying) {
-                try {
-                    createCreepyNoise();
-                    startCreepyAudio();
-                } catch(e) {
-                    console.log('Audio context creation failed:', e);
-                }
-            }
-        }, { once: true });
+    // 페이지 첫 클릭/터치에서 오디오 시작
+    function initAudio() {
+        startCreepyAudio();
+        // 이벤트 리스너 제거 (한 번만 실행)
+        document.removeEventListener('click', initAudio);
+        document.removeEventListener('touchstart', initAudio);
+        document.removeEventListener('keydown', initAudio);
+    }
 
-        // 터치 이벤트도 추가 (모바일)
-        document.addEventListener('touchstart', () => {
-            if (!isPlaying) {
-                try {
-                    createCreepyNoise();
-                    startCreepyAudio();
-                } catch(e) {
-                    console.log('Audio context creation failed:', e);
-                }
-            }
-        }, { once: true });
-    });
+    // 여러 이벤트에 리스너 추가
+    document.addEventListener('click', initAudio);
+    document.addEventListener('touchstart', initAudio);
+    document.addEventListener('keydown', initAudio);
     let flowerCount = 0;
     let messageCount = 0;
     let clickAttempts = 0;
